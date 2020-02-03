@@ -1,0 +1,8 @@
+<mat-card>
+    <mat-progress-bar *ngIf="loading" class="card-progress" mode="indeterminate"></mat-progress-bar>
+    <add-expense-form (onAddClick)="addExpenseForm_onAddClick($event)"></add-expense-form>
+</mat-card>
+
+<mat-card>
+    <history></history>
+</mat-card>

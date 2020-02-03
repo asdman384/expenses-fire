@@ -1,0 +1,21 @@
+.fill-remaining-space {
+    flex: 1 1 auto;
+}
+
+.avatar {
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-top: 2px;
+}
+
+.content {
+    padding: 5px;
+}
+
+.content>* {
+    margin-bottom: 5px;
+}
+
+.header-loader {
+    margin-right: 2px;
+}

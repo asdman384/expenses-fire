@@ -1,1 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: #efefef;
+}
+
+.header-loader .mat-progress-spinner.mat-accent circle, .mat-spinner.mat-accent circle {
+    stroke: #fff;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-cell:first-of-type, .mat-footer-cell:first-of-type, .mat-header-cell:first-of-type {
+    padding-left: 0 !important;
+}
+
+.mat-cell:last-of-type, .mat-footer-cell:last-of-type, .mat-header-cell:last-of-type {
+    padding-right: 0 !important;
+}
+
+.mat-header-row {
+    height: 20px !important;
+}
+
+.mat-footer-row, .mat-row {
+    height: 30px !important;
+}
+
+.mat-cell:not(:last-of-type), .mat-footer-cell:not(:last-of-type), .mat-header-cell:not(:last-of-type) {
+    padding-right: 20px !important;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.flex-row>*:not(:last-child) {
+    margin-right: 10px;
+}

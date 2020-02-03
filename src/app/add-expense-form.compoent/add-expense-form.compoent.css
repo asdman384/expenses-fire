@@ -1,0 +1,11 @@
+.full-width {
+    width: 100%;
+}
+
+.input-date {
+    min-width: 100px;
+}
+
+.input-amount {
+    width: 100px;
+}

@@ -1,0 +1,9 @@
+.card-progress {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+mat-card {
+    margin-bottom: 5px;
+}

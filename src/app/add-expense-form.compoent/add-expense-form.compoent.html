@@ -1,0 +1,45 @@
+<div class="flex-row">
+
+    <mat-form-field class="input-date">
+        <input [(ngModel)]="value.expense.date" matInput [matDatepicker]="picker" placeholder="Date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>User</mat-label>
+        <mat-select [(ngModel)]="value.userId">
+            <mat-option *ngFor="let setting of userSettings | async" value="{{setting.userId}}">{{setting.displayName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>
+
+<div class="flex-row">
+
+    <mat-form-field class="input-amount">
+        <input [(ngModel)]="value.expense.amount" matInput type="number" placeholder="Amount">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="value.expense.catId">
+            <mat-option *ngFor="let category of categories | async" value="{{category.id}}">{{category.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+</div>
+
+<mat-form-field class="full-width">
+    <mat-label>Comment</mat-label>
+    <textarea [(ngModel)]="value.expense.comm" matInput cdkTextareaAutosize></textarea>
+    <button mat-button *ngIf="value.expense.comm" matSuffix mat-icon-button aria-label="Clear"
+        (click)="value.expense.comm=''">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-form-field>
+
+<button mat-stroked-button color="primary" (click)="onButtonAddClick()"
+    [disabled]="!value.expense.date || !value.expense.amount || !value.expense.catId">ADD</button>
