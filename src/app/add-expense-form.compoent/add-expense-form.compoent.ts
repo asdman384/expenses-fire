@@ -14,7 +14,7 @@ import { Database } from 'src/services/database';
 })
 export class AddExpenseFormComponent implements OnInit {
 
-    value: UserExpense;
+    value: UserExpense = new UserExpense();
     @Output() onAddClick = new EventEmitter<UserExpense>();
 
     categories: Observable<CategoryInfo[]>;
@@ -26,11 +26,11 @@ export class AddExpenseFormComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.reset();
         this.afAuth.authState.subscribe((user: firebase.User) => {
             if (!user)
                 return;
 
+            this.reset();
             this.categories = this.database.getAllCategories();
             this.userSettings = this.database.getAllUserSettings();
         })

@@ -23,14 +23,12 @@ import { AddExpenseFormComponent } from './add-expense-form.compoent/add-expense
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CategoryPipe, HistoryComponent } from './history.component/history.component';
-import { LoginComponent } from './login.component/login.component';
 import { MainScreenComponent } from './main-screen.compoent/main-screen.component';
 import { StatsComponent } from './stats.component/stats.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        LoginComponent,
         StatsComponent,
         MainScreenComponent,
         AddExpenseFormComponent,

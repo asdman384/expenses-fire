@@ -27,7 +27,7 @@
         </div>
 
         <ng-template #elseLoader>
-            <div class="header-loader" *ngIf="router.url === '/'">
+            <div class="header-loader" *ngIf="loading">
                 <mat-spinner color="accent" diameter="36"></mat-spinner>
             </div>
         </ng-template>
@@ -35,6 +35,13 @@
     </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="content">
+<div class="content" *ngIf="afAuth.user | async as user; else loginOptions">
     <router-outlet></router-outlet>
 </div>
+
+<ng-template #loginOptions>
+    <div *ngIf="!loading">
+        <p>Login options:</p>
+        <button mat-raised-button (click)="login()">Login with Google</button>
+    </div>
+</ng-template>

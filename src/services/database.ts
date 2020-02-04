@@ -3,11 +3,10 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
 import { firestore } from 'firebase';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { CategoryInfo } from 'src/models/category-info';
 import { Expense, ExpenseDto, UserExpense } from 'src/models/expense-info';
 import { UserSetting } from 'src/models/users-setting';
-import { resolve } from 'url';
 
 @Injectable({
     providedIn: 'root'
@@ -39,26 +38,17 @@ export class Database {
     ) { }
 
     public addExpense(userExpense: UserExpense): Promise<any> {
-        console.log(userExpense);
-
-        // return new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //         return resolve();
-        //     }, 10);
-        // })
         return this.fireStore
             .collection('exps-' + userExpense.userId)
             .add(ExpenseConverter.toFirestore(userExpense.expense))
     }
 
     public getExpenses(queryFn?: QueryFn, userId?: string): Observable<Expense[]> {
-        return this.afAuth.user.pipe(
-            switchMap(user => {
-                let table = 'exps-' + (userId || user.uid);
-                return this.fireStore.collection<ExpenseDto>(table, queryFn).valueChanges({ idField: 'id' })
-            }),
-            map(dto => dto.map(ExpenseConverter.fromFirestore))
-        );
+        let table = 'exps-' + (userId || this.afAuth.auth.currentUser.uid);
+
+        return this.fireStore.collection<ExpenseDto>(table, queryFn)
+            .valueChanges({ idField: 'id' })
+            .pipe(map(dto => dto.map(ExpenseConverter.fromFirestore)));
     }
 
     public getMonthExpenses(month: number, userId?: string): Observable<Expense[]> {
