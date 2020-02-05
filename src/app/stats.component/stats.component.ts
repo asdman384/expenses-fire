@@ -20,12 +20,15 @@ export class StatsComponent implements OnInit {
     yearSelect = new FormControl();
     userSelect = new FormControl();
 
-    userSettings: Observable<UserSetting[]>;
     yearSelectDataSource = Array.from({ length: new Date().getFullYear() - 2018 }, (v, i) => 2019 + i);
     dataSource: BehaviorSubject<ExpenseNcategory[]> = new BehaviorSubject<ExpenseNcategory[]>([]);
 
     columnsToDisplay: string[] = ['category', 'amount'];
-    data: ExpenseNcategory[];
+
+    aggregator$ =
+        new BehaviorSubject<ExpenseAggregator>(data => Helper.reduceByCategory(data).sort(Helper.sortBy('amount')));
+
+    userSettings: Observable<UserSetting[]>;
 
     constructor(
         public afAuth: AngularFireAuth,
@@ -33,14 +36,15 @@ export class StatsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        let expenses$: Observable<ExpenseNcategory[]> =
+            combineLatest(
+                this.monthSelect.valueChanges,
+                this.yearSelect.valueChanges,
+                this.userSelect.valueChanges)
+                .pipe(switchMap(([month, year, userId]) => this.database.getMonthExpenses(+month, year, userId)));
 
-        combineLatest(this.monthSelect.valueChanges, this.yearSelect.valueChanges, this.userSelect.valueChanges)
-            .pipe(switchMap(([month, year, userId]) => this.database.getMonthExpenses(+month, year, userId)))
-            .subscribe(data => {
-                this.data = data;
-                this.dataSource.next(
-                    Helper.reduceByCategory(data).sort(Helper.sortBy('amount')));
-            });
+        combineLatest(expenses$, this.aggregator$)
+            .subscribe(([expenses, aggregator]) => this.dataSource.next(aggregator(expenses)));
 
         this.afAuth.authState.subscribe((user: firebase.User) => {
             if (!user)
@@ -54,8 +58,27 @@ export class StatsComponent implements OnInit {
 
     }
 
+    categoryRowClick(row: ExpenseNcategory) {
+        this.aggregator$.next(expenses =>
+            Helper.groupBy<ExpenseNcategory>(expenses, 'catId')[row.catId].sort(Helper.sortBy('amount')));
+
+        this.columnsToDisplay = ['date', 'amount', 'comment']
+    }
+
+    clickBack() {
+        this.aggregator$.next(expenses =>
+            Helper.reduceByCategory(expenses).sort(Helper.sortBy('amount')));
+
+        this.columnsToDisplay = ['category', 'amount'];
+    }
 
     calculateTotal(expense: ExpenseNcategory[]) {
         return expense.map(e => e.amount).reduce((p, c) => p + c, 0);
     }
+
+    dateTotal(data: ExpenseNcategory[]) {
+        return data[0].categoryName;
+    }
 }
+
+type ExpenseAggregator = (expenses: ExpenseNcategory[]) => ExpenseNcategory[];
