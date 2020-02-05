@@ -1,11 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Database } from 'src/services/database';
-import { switchMap } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { FormControl } from '@angular/forms';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Helper } from 'src/helpers/helper';
+import { ExpenseNcategory } from 'src/models/expense-info';
 import { UserSetting } from 'src/models/users-setting';
-import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { Expense } from 'src/models/expense-info';
+import { Database } from 'src/services/database';
 
 @Component({
     selector: 'stats',
@@ -16,13 +17,15 @@ import { Expense } from 'src/models/expense-info';
 export class StatsComponent implements OnInit {
 
     monthSelect = new FormControl();
-    yearSelect = new FormControl(new Date().getFullYear() + '');
+    yearSelect = new FormControl();
     userSelect = new FormControl();
+
     userSettings: Observable<UserSetting[]>;
     yearSelectDataSource = Array.from({ length: new Date().getFullYear() - 2018 }, (v, i) => 2019 + i);
-    dataSource: BehaviorSubject<Expense[]> = new BehaviorSubject<Expense[]>([]);
+    dataSource: BehaviorSubject<ExpenseNcategory[]> = new BehaviorSubject<ExpenseNcategory[]>([]);
+
     columnsToDisplay: string[] = ['category', 'amount'];
-    data: Expense[];
+    data: ExpenseNcategory[];
 
     constructor(
         public afAuth: AngularFireAuth,
@@ -31,12 +34,12 @@ export class StatsComponent implements OnInit {
 
     ngOnInit(): void {
 
-        combineLatest(this.monthSelect.valueChanges, this.userSelect.valueChanges)
-            .pipe(switchMap(([month, userId]) => this.database.getMonthExpenses(+month, userId)))
+        combineLatest(this.monthSelect.valueChanges, this.yearSelect.valueChanges, this.userSelect.valueChanges)
+            .pipe(switchMap(([month, year, userId]) => this.database.getMonthExpenses(+month, year, userId)))
             .subscribe(data => {
                 this.data = data;
                 this.dataSource.next(
-                    Reducers.reduceByCategory(data).sort(Reducers.sortBy('amount')));
+                    Helper.reduceByCategory(data).sort(Helper.sortBy('amount')));
             });
 
         this.afAuth.authState.subscribe((user: firebase.User) => {
@@ -46,33 +49,13 @@ export class StatsComponent implements OnInit {
             this.userSettings = this.database.getAllUserSettings();
             this.userSelect.setValue(user.uid);
             this.monthSelect.setValue(new Date().getMonth() + '');
+            this.yearSelect.setValue(new Date().getFullYear() + '');
         })
 
     }
 
 
-    calculateTotal(expense: Expense[]) {
+    calculateTotal(expense: ExpenseNcategory[]) {
         return expense.map(e => e.amount).reduce((p, c) => p + c, 0);
-    }
-}
-
-
-class Reducers {
-
-    public static sortBy(field: string) {
-        return function (a, b) { return b[field] - a[field] }
-    }
-
-    public static reduceByCategory(dataSet: Expense[]): Expense[] {
-        if (!dataSet)
-            return [];
-
-        var result = new Array<Expense>();
-        var data = dataSet.reduce((p, c: Expense) => {
-            p.set(c.catId, p.has(c.catId) ? c.amount + p.get(c.catId) : c.amount); return p;
-        }, new Map<string, number>());
-
-        data.forEach((val, key) => result.push({ catId: key, amount: val, date: null }))
-        return result;
     }
 }

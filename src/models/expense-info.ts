@@ -23,3 +23,5 @@ export class ExpenseDto {
     catId: string;
     comm?: string;
 }
+
+export type ExpenseNcategory = (Expense & { categoryName: string })

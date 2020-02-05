@@ -22,7 +22,7 @@ import { Database } from 'src/services/database';
 import { AddExpenseFormComponent } from './add-expense-form.compoent/add-expense-form.compoent';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CategoryPipe, HistoryComponent } from './history.component/history.component';
+import { HistoryComponent } from './history.component/history.component';
 import { MainScreenComponent } from './main-screen.compoent/main-screen.component';
 import { StatsComponent } from './stats.component/stats.component';
 
@@ -33,7 +33,6 @@ import { StatsComponent } from './stats.component/stats.component';
         MainScreenComponent,
         AddExpenseFormComponent,
         HistoryComponent,
-        CategoryPipe
     ],
     imports: [
         FormsModule,
