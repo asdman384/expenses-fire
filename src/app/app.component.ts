@@ -41,6 +41,10 @@ export class AppComponent implements OnInit {
             });
     }
 
+    reload() {
+        document.location.reload();
+    }
+
     login() {
         this.afAuth.auth.signInWithRedirect(new auth.GoogleAuthProvider());
     }
