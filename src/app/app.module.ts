@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
@@ -19,12 +20,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from 'src/environments/environment';
 import { Database } from 'src/services/database';
-import { AddExpenseFormComponent } from './add-expense-form.compoent/add-expense-form.compoent';
+import { DraggableDirective } from '../derictives/draggable.directive';
+import { AddExpenseFormComponent } from './add-expense-form/add-expense-form.compoent';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HistoryComponent } from './history.component/history.component';
-import { MainScreenComponent } from './main-screen.compoent/main-screen.component';
-import { StatsComponent } from './stats.component/stats.component';
+import { HistoryComponent } from './history/history.component';
+import { MainScreenComponent } from './main-screen/main-screen.component';
+import { SettingsComponent } from './settings/settings.component';
+import { StatsComponent } from './stats/stats.component';
 
 @NgModule({
     declarations: [
@@ -33,6 +36,9 @@ import { StatsComponent } from './stats.component/stats.component';
         MainScreenComponent,
         AddExpenseFormComponent,
         HistoryComponent,
+        SettingsComponent,
+
+        DraggableDirective
     ],
     imports: [
         FormsModule,
@@ -42,7 +48,10 @@ import { StatsComponent } from './stats.component/stats.component';
 
         AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
+        AngularFirestoreModule.enablePersistence(),
         AngularFireAuthModule,
+
+        DragDropModule,
 
         MatTableModule,
         MatProgressBarModule,

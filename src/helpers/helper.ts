@@ -18,8 +18,10 @@ export class Helper {
         return result;
     }
 
-    public static sortBy(field: string) {
-        return function (a, b) { return b[field] - a[field] }
+    public static sortBy(field: string, order?: 'desc' | 'asc') {
+        return function (a, b) {
+            return order == 'asc' ? a[field] - b[field] : b[field] - a[field]
+        }
     }
 
     public static groupBy<T>(xs: T[], key: string): { [key: string]: T[] } {

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FormControl } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
+import { distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Helper } from 'src/helpers/helper';
 import { ExpenseNcategory } from 'src/models/expense-info';
 import { UserSetting } from 'src/models/users-setting';
 import { Database } from 'src/services/database';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'stats',
@@ -41,10 +42,14 @@ export class StatsComponent implements OnInit {
                 this.monthSelect.valueChanges,
                 this.yearSelect.valueChanges,
                 this.userSelect.valueChanges)
-                .pipe(switchMap(([month, year, userId]) => this.database.getMonthExpenses(+month, year, userId)));
+                .pipe(
+                    distinctUntilChanged(),
+                    switchMap(([month, year, userId]) => this.database.getMonthExpenses(+month, year, userId))
+                );
 
         combineLatest(expenses$, this.aggregator$)
-            .subscribe(([expenses, aggregator]) => this.dataSource.next(aggregator(expenses)));
+            .subscribe(([expenses, aggregator]) =>
+                this.dataSource.next(aggregator(expenses)));
 
         this.afAuth.authState.subscribe((user: firebase.User) => {
             if (!user)

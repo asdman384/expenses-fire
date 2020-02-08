@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
-import { firestore } from 'firebase';
-import { combineLatest, Observable } from 'rxjs';
+import { firestore } from 'firebase/app';
+import { Observable } from 'rxjs';
+import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { map } from 'rxjs/operators';
 import { CategoryInfo } from 'src/models/category-info';
 import { Expense, ExpenseDto, ExpenseNcategory, UserExpense } from 'src/models/expense-info';
@@ -12,6 +13,8 @@ import { UserSetting } from 'src/models/users-setting';
     providedIn: 'root'
 })
 export class Database {
+
+    private expTableSuffix = 'exps-';
 
     public static todayQueryFn: QueryFn = ref => {
         return ref
@@ -39,12 +42,18 @@ export class Database {
 
     public addExpense(userExpense: UserExpense): Promise<any> {
         return this.fireStore
-            .collection('exps-' + userExpense.userId)
+            .collection(this.expTableSuffix + userExpense.userId)
             .add(ExpenseConverter.toFirestore(userExpense.expense))
     }
 
+    public deleteExpense(id: string, userId?: string): Promise<void> {
+        let table = this.expTableSuffix + (userId || this.afAuth.auth.currentUser.uid);
+
+        return this.fireStore.collection(table).doc(id).delete();
+    }
+
     public getExpenses(queryFn?: QueryFn, userId?: string): Observable<Expense[]> {
-        let table = 'exps-' + (userId || this.afAuth.auth.currentUser.uid);
+        let table = this.expTableSuffix + (userId || this.afAuth.auth.currentUser.uid);
 
         return this.fireStore.collection<ExpenseDto>(table, queryFn)
             .valueChanges({ idField: 'id' })

@@ -5,6 +5,8 @@ import { CategoryInfo } from 'src/models/category-info';
 import { UserExpense } from 'src/models/expense-info';
 import { UserSetting } from 'src/models/users-setting';
 import { Database } from 'src/services/database';
+import { map } from 'rxjs/operators';
+import { Helper } from 'src/helpers/helper';
 
 @Component({
     selector: 'add-expense-form',
@@ -31,7 +33,8 @@ export class AddExpenseFormComponent implements OnInit {
                 return;
 
             this.reset();
-            this.categories = this.database.getAllCategories();
+            this.categories = this.database.getAllCategories()
+                .pipe(map(categories => categories.sort(Helper.sortBy('priority', 'asc'))));
             this.userSettings = this.database.getAllUserSettings();
         })
     }

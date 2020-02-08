@@ -1,0 +1,10 @@
+<mat-card>
+    <h4>Categories order</h4>
+    <div #droplist cdkDropList class="example-list" [cdkDropListData]="(categories | async)"
+        (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="listDisabled">
+        <div class="example-box" *ngFor="let category of (categories | async)" cdkDrag [cdkDragData]="category">
+            <mat-icon cdkDragHandle>drag_indicator</mat-icon>
+            {{ category.name }}
+        </div>
+    </div>
+</mat-card>
