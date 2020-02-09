@@ -27,6 +27,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="['date', 'amount', 'category', 'comment']"></tr>
-    <tr class="table-row" dDraggable (onPutBack)="onPutBack($event, row)" (onMove)="onMove($event, row)" mat-row
+    <tr class="table-row" dDraggable [disableDrag]="disableDrag" (onPutBack)="onPutBack($event, row)"
+        (onMove)="onMove($event, row)" mat-row
         *matRowDef="let row; columns: ['date', 'amount', 'category', 'comment'];"></tr>
 </table>

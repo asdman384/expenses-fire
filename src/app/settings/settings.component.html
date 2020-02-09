@@ -1,7 +1,20 @@
 <mat-card>
+    <h4>Add Categories</h4>
+    <div class="flex-row">
+        <mat-form-field class="full-width">
+            <input [(ngModel)]="categoryName" matInput placeholder="Category name" autocomplete="off">
+        </mat-form-field>
+
+        <button mat-stroked-button color="primary" (click)="onButtonAddClick()" [disabled]="!categoryName">ADD</button>
+    </div>
+</mat-card>
+
+<mat-card>
     <h4>Categories order</h4>
     <div cdkDropList class="list" (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="listDisabled">
-        <div class="box" *ngFor="let category of categories" cdkDrag>
+        <div class="box" *ngFor="let category of categories" cdkDrag [cdkDragData]="category"
+            (cdkDragMoved)="cdkDragMoved($event)">
+            <div class="custom-placeholder" *cdkDragPlaceholder> {{ dragPlaceholderText }} &nbsp;</div>
             <mat-icon cdkDragHandle>drag_indicator</mat-icon>
             {{ category.name }}
             <!-- {{ category.priority }} -->

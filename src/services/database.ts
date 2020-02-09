@@ -5,7 +5,7 @@ import { firestore } from 'firebase/app';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { map } from 'rxjs/operators';
-import { CategoryInfo } from 'src/models/category-info';
+import { CategoryDto, CategoryInfo } from 'src/models/category-info';
 import { Expense, ExpenseDto, ExpenseNcategory, UserExpense } from 'src/models/expense-info';
 import { UserSetting } from 'src/models/users-setting';
 
@@ -15,6 +15,7 @@ import { UserSetting } from 'src/models/users-setting';
 export class Database {
 
     private expTableSuffix = 'exps-';
+    private categoriesTable = 'categories';
 
     public static todayQueryFn: QueryFn = ref => {
         return ref
@@ -94,9 +95,23 @@ export class Database {
         return this.getExpensesNcategory(monthQuery, userId);
     }
 
+    public addCategory(category: CategoryInfo) {
+        return this.fireStore
+            .collection<CategoryInfo>(this.categoriesTable)
+            .doc<CategoryDto>(category.id)
+            .set({
+                name: category.name,
+                priority: category.priority
+            });
+    }
+
+    delteCategory(id: string) {
+        return this.fireStore.collection(this.categoriesTable).doc(id).delete();
+    }
+
     public getAllCategories(): Observable<CategoryInfo[]> {
         return this.fireStore
-            .collection<CategoryInfo>('categories')
+            .collection<CategoryInfo>(this.categoriesTable)
             .valueChanges({ idField: 'id' });
     }
 

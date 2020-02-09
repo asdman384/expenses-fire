@@ -3,3 +3,8 @@ export class CategoryInfo {
     name: string;
     priority: number;
 }
+
+export class CategoryDto {
+    name: string;
+    priority: number;
+}

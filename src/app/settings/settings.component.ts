@@ -1,4 +1,4 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragMove, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -13,8 +13,11 @@ import { Database } from 'src/services/database';
 })
 export class SettingsComponent implements OnInit {
 
+    categoryName: string;
     categories: CategoryInfo[];
     listDisabled: boolean = false;
+    private readonly distanceTodelete = 150;
+    dragPlaceholderText: string;
 
     constructor(
         public afAuth: AngularFireAuth,
@@ -33,11 +36,27 @@ export class SettingsComponent implements OnInit {
         })
     }
 
+    onButtonAddClick() {
+        let last = this.categories[this.categories.length - 1];
+        this.database.addCategory({
+            id: (+last.id + 1) + '',
+            priority: +last.priority + 1,
+            name: this.categoryName
+        }).then(() => this.categoryName = undefined);
+    }
+
+    cdkDragMoved(event: CdkDragMove) {
+        this.dragPlaceholderText = event.distance.x > this.distanceTodelete ? 'delete?' : '';
+    }
+
     onDrop(event: CdkDragDrop<CategoryInfo[]>) {
         const from = event.previousIndex;
         const to = event.currentIndex;
-        if (from === to)
+        if (from === to) {
+            if (event.distance.x > this.distanceTodelete)
+                this.database.delteCategory(event.item.data.id);
             return;
+        }
 
         const delta = to > from ? -1 : 1;
         // TODO: move batch update to database

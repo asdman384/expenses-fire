@@ -1,3 +1,7 @@
+.flex-row {
+    align-items: center;
+}
+
 .list {
     max-width: 100%;
     border: solid 1px rgb(224, 224, 224);
@@ -29,7 +33,15 @@
 }
 
 .cdk-drag-placeholder {
-    opacity: 0;
+    /* opacity: 0; */
+}
+
+.custom-placeholder {
+    height: 27px;
+    width: 100%;
+    background: #ccc;
+    border: dotted 1px #999;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .cdk-drag-animating {

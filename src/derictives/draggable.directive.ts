@@ -1,10 +1,12 @@
-import { Directive, ElementRef, OnDestroy, Renderer2, Output, EventEmitter } from '@angular/core';
+import { Directive, ElementRef, OnDestroy, Renderer2, Output, EventEmitter, Input } from '@angular/core';
 
 @Directive({ selector: '[dDraggable]' })
 export class DraggableDirective implements OnDestroy {
 
     @Output() onPutBack = new EventEmitter<{ shift: number, element: HTMLElement }>();
     @Output() onMove = new EventEmitter<{ shift: number, element: HTMLElement }>();
+
+    @Input() disableDrag: boolean = false;
 
     private element: HTMLElement;
     private originPos: IPosition;
@@ -31,10 +33,11 @@ export class DraggableDirective implements OnDestroy {
     }
 
     private putBack = (event: TouchEvent) => {
-        this.onPutBack.emit({
-            shift: this.getPos(event).x - this.originPos.x,
-            element: this.element
-        });
+        if (!this.disableDrag)
+            this.onPutBack.emit({
+                shift: this.getPos(event).x - this.originPos.x,
+                element: this.element
+            });
         this.renderer.removeStyle(this.element, 'transform');
         this.renderer.removeStyle(this.element, '-webkit-transform');
         this.renderer.removeStyle(this.element, '-ms-transform');
@@ -51,12 +54,13 @@ export class DraggableDirective implements OnDestroy {
     }
 
     private onPointerMove = (event: TouchEvent) => {
-        this.moveTo(this.getPos(event));
+        if (!this.disableDrag)
+            this.moveTo(this.getPos(event));
     }
 
     private moveTo(pos: IPosition) {
         let shift = pos.x - this.originPos.x;
-        if (shift < -5 || shift > 5) {
+        if (shift < -4 || shift > 4) {
             this.onMove.emit({ shift, element: this.element });
             let value = `translateX(${shift}px)`;
             this.renderer.setStyle(this.element, 'transform', value);

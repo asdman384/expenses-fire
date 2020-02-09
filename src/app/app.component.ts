@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { auth } from 'firebase/app';
+import { ExceptionDialog } from 'src/dialogs/exception.dialog';
 import { Database } from 'src/services/database';
 
 @Component({
@@ -18,6 +20,7 @@ export class AppComponent implements OnInit {
         public router: Router,
         public afAuth: AngularFireAuth,
         private database: Database,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -29,20 +32,13 @@ export class AppComponent implements OnInit {
                     this.database.createUserSettingIfNotExist(
                         result.user.uid, result.user.displayName, result.user.email);
                 }
-            }).catch(function (error) {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // The email of the user's account used.
-                var email = error.email;
-                // The firebase.auth.AuthCredential type that was used.
-                var credential = error.credential;
-                console.log(error);
-            });
+            }).catch(error =>
+                this.dialog.open(ExceptionDialog, { data: error }));
     }
 
     reload() {
-        document.location.reload();
+        this.router.navigate([''])
+            .then(_ => document.location.reload());
     }
 
     login() {

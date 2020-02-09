@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { QueryFn } from '@angular/fire/firestore';
 import { MatRadioChange, MatTable } from '@angular/material';
@@ -17,6 +17,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     dataSource: Observable<ExpenseNcategory[]>
     queryFnSubject = new BehaviorSubject<QueryFn>(Database.todayQueryFn)
     preventDocumentScroll: boolean = false;
+    disableDrag: boolean = false;
 
     @ViewChild(MatTable, { static: true, read: ElementRef }) matTable: ElementRef<HTMLTableElement>;
 
@@ -27,6 +28,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         document.addEventListener('touchmove', this.docTouchmove, { passive: false });
+        document.addEventListener('touchend', this.docToucend, { passive: false });
 
         this.afAuth.user.subscribe(_ => {
             this.dataSource = this.queryFnSubject
@@ -41,6 +43,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
             event.stopPropagation();
             event.preventDefault();
         }
+        else {
+            this.disableDrag = true;
+        }
+    }
+
+    private docToucend = (event: Event) => {
+        this.disableDrag = false
     }
 
     intervalRadioGroupChange(change: MatRadioChange) {
@@ -66,6 +75,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        document.removeEventListener('scroll', this.docTouchmove)
+        document.removeEventListener('touchmove', this.docTouchmove)
+        document.removeEventListener('touchend', this.docToucend);
     }
 }
