@@ -1,10 +1,10 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatInputModule, MatTableModule } from '@angular/material';
+import { MatDialogModule, MatFormFieldModule, MatInputModule, MatTableModule } from '@angular/material';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -18,8 +18,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ExceptionDialog } from 'src/dialogs/exception.dialog';
 import { environment } from 'src/environments/environment';
 import { Database } from 'src/services/database';
+import { GlobalErrorHandler } from 'src/services/error-handler';
 import { DraggableDirective } from '../derictives/draggable.directive';
 import { AddExpenseFormComponent } from './add-expense-form/add-expense-form.compoent';
 import { AppRoutingModule } from './app-routing.module';
@@ -37,7 +39,8 @@ import { StatsComponent } from './stats/stats.component';
         AddExpenseFormComponent,
         HistoryComponent,
         SettingsComponent,
-
+        ExceptionDialog,
+        
         DraggableDirective
     ],
     imports: [
@@ -65,14 +68,17 @@ import { StatsComponent } from './stats/stats.component';
         MatRadioModule,
         MatInputModule,
         MatFormFieldModule,
+        MatDialogModule,
         MatDatepickerModule,
         MatNativeDateModule,
 
         AppRoutingModule,
     ],
+    entryComponents: [ExceptionDialog],
     providers: [
         MatDatepickerModule,
-        Database
+        Database,
+        { provide: ErrorHandler, useClass: GlobalErrorHandler }
     ],
     bootstrap: [AppComponent]
 })
