@@ -1,12 +1,10 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Helper } from 'src/helpers/helper';
 import { CategoryInfo } from 'src/models/category-info';
 import { Database } from 'src/services/database';
-import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
     selector: 'app-settings',
@@ -15,7 +13,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class SettingsComponent implements OnInit {
 
-    categories: Observable<CategoryInfo[]>;
+    categories: CategoryInfo[];
     listDisabled: boolean = false;
 
     constructor(
@@ -29,35 +27,31 @@ export class SettingsComponent implements OnInit {
             if (!user)
                 return;
 
-            this.categories = this.database.getAllCategories()
-                .pipe(map(categories => categories.sort(Helper.sortBy('priority', 'asc'))));
+            this.database.getAllCategories()
+                .subscribe(categories =>
+                    this.categories = categories.sort(Helper.sortBy('priority', 'asc')));
         })
     }
 
-    drop(event: CdkDragDrop<CategoryInfo[]>) {
-        if (event.currentIndex === event.previousIndex) // nothing was changed
+    onDrop(event: CdkDragDrop<CategoryInfo[]>) {
+        const from = event.previousIndex;
+        const to = event.currentIndex;
+        if (from === to)
             return;
 
-        let droppedItem: CategoryInfo = event.item.data;
-        let toChange: CategoryInfo[];
-        let onTop: boolean = event.currentIndex < event.previousIndex;
-
-        if (onTop) { //dropped item moved top
-            toChange = event.container.data.filter(
-                c => c.priority > event.currentIndex && c.priority < droppedItem.priority);
-        } else { //dropped item moved down
-            toChange = event.container.data.filter(
-                c => c.priority <= event.currentIndex + 1 && c.priority > droppedItem.priority);
+        const delta = to > from ? -1 : 1;
+        // TODO: move batch update to database
+        const batch = this.db.firestore.batch();
+        let category = this.categories[event.previousIndex];
+        let doc = this.db.collection("categories").doc(category.id);
+        batch.update(doc.ref, { priority: event.currentIndex });
+        for (let i = to; i !== from; i += delta) {
+            category = this.categories[i];
+            doc = this.db.collection("categories").doc(category.id);
+            batch.update(doc.ref, { priority: category.priority + delta });
         }
 
-        var batch = this.db.firestore.batch();
-        var doc = this.db.collection("categories").doc(droppedItem.id)
-        batch.update(doc.ref, { priority: event.currentIndex + 1 });
-        toChange.forEach(category => {
-            doc = this.db.collection("categories").doc(category.id)
-            batch.update(doc.ref, { priority: category.priority + (onTop ? 1 : -1) });
-        })
-
+        moveItemInArray(this.categories, event.previousIndex, event.currentIndex);
         this.listDisabled = true;
         batch.commit()
             .then(() => this.listDisabled = false);

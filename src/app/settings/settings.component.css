@@ -1,4 +1,4 @@
-.example-list {
+.list {
     max-width: 100%;
     border: solid 1px rgb(224, 224, 224);
     display: block;
@@ -7,7 +7,7 @@
     overflow: hidden;
 }
 
-.example-box {
+.box {
     padding: 2px 10px;
     border-bottom: solid 1px rgb(224, 224, 224);
     display: flex;
@@ -16,6 +16,10 @@
     justify-content: space-between;
     background: white;
     font-size: 14px;
+}
+
+.box:last-child {
+    border: none;
 }
 
 .cdk-drag-preview {
@@ -32,14 +36,11 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.example-box:last-child {
-    border: none;
-}
-
-.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+.list.cdk-drop-list-dragging .box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .cdk-drag-handle {
+    width: 50px;
     color: #8a8a8a;
 }
