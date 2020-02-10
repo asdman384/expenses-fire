@@ -1,9 +1,9 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { QueryFn } from '@angular/fire/firestore';
 import { MatRadioChange, MatTable } from '@angular/material';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { switchMap, filter } from 'rxjs/operators';
 import { ExpenseNcategory } from 'src/models/expense-info';
 import { Database } from 'src/services/database';
 
@@ -14,10 +14,15 @@ import { Database } from 'src/services/database';
 })
 export class HistoryComponent implements OnInit, OnDestroy {
 
-    dataSource: Observable<ExpenseNcategory[]>
-    queryFnSubject = new BehaviorSubject<QueryFn>(Database.todayQueryFn)
-    preventDocumentScroll: boolean = false;
+    @Input() set userId(value) {
+        this.userIdSubject.next(value);
+    }
+
     disableDrag: boolean = false;
+    dataSource: Observable<ExpenseNcategory[]>;
+    private queryFnSubject = new BehaviorSubject<QueryFn>(Database.todayQueryFn);
+    private userIdSubject = new BehaviorSubject<string>(null);
+    private preventDocumentScroll: boolean = false;
 
     @ViewChild(MatTable, { static: true, read: ElementRef }) matTable: ElementRef<HTMLTableElement>;
 
@@ -30,12 +35,13 @@ export class HistoryComponent implements OnInit, OnDestroy {
         document.addEventListener('touchmove', this.docTouchmove, { passive: false });
         document.addEventListener('touchend', this.docToucend, { passive: false });
 
-        this.afAuth.user.subscribe(_ => {
-            this.dataSource = this.queryFnSubject
-                .pipe(
-                    filter(_ => !!this.afAuth.auth.currentUser),
-                    switchMap(queryFn => this.database.getExpensesNcategory(queryFn)));
-        })
+        this.dataSource = combineLatest(
+            this.afAuth.user,
+            this.queryFnSubject,
+            this.userIdSubject
+        ).pipe(
+            filter(([user, queryFn, userId]) => !!user),
+            switchMap(([user, queryFn, userId]) => this.database.getExpensesNcategory(queryFn, userId)));
     }
 
     private docTouchmove = (event: Event) => {
@@ -59,7 +65,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     onMove(event: { shift: number, element: HTMLElement }, row: ExpenseNcategory) {
         this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 0.5)';
-        if (event.shift > 80)
+        if (event.shift > 100)
             this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 1)';
 
         this.preventDocumentScroll = true;
@@ -68,7 +74,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     onPutBack(event: { shift: number, element: HTMLElement }, row: ExpenseNcategory) {
         this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 0.5)';
 
-        if (event.shift > 80)
+        if (event.shift > 100)
             this.database.deleteExpense(row.id)
 
         this.preventDocumentScroll = false;

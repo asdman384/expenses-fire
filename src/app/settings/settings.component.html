@@ -14,7 +14,7 @@
     <div cdkDropList class="list" (cdkDropListDropped)="onDrop($event)" [cdkDropListDisabled]="listDisabled">
         <div class="box" *ngFor="let category of categories" cdkDrag [cdkDragData]="category"
             (cdkDragMoved)="cdkDragMoved($event)">
-            <div class="custom-placeholder" *cdkDragPlaceholder> {{ dragPlaceholderText }} &nbsp;</div>
+            <div class="custom-placeholder" *cdkDragPlaceholder> {{ dragPlaceholderText }} </div>
             <mat-icon cdkDragHandle>drag_indicator</mat-icon>
             {{ category.name }}
             <!-- {{ category.priority }} -->
