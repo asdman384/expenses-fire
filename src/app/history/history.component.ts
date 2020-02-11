@@ -1,7 +1,8 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { QueryFn } from '@angular/fire/firestore';
-import { MatRadioChange, MatTable } from '@angular/material';
+import { MatRadioChange } from '@angular/material/radio';
+import { MatTable } from '@angular/material/table';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { switchMap, filter } from 'rxjs/operators';
 import { ExpenseNcategory } from 'src/models/expense-info';
