@@ -20,11 +20,11 @@ export class Helper {
 
     public static sortBy(field: string, order?: 'desc' | 'asc') {
         return function (a, b) {
-            return order == 'asc' ? a[field] - b[field] : b[field] - a[field]
-        }
+            return order == 'asc' ? a[field] - b[field] : b[field] - a[field];
+        };
     }
 
-    public static groupBy<T>(xs: T[], key: string): { [key: string]: T[] } {
+    public static groupBy<T>(xs: T[], key: string): { [key: string]: T[]; } {
         return xs.reduce(function (rv, x) {
             (rv[x[key]] = rv[x[key]] || []).push(x);
             return rv;

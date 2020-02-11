@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit {
             this.database.getAllCategories()
                 .subscribe(categories =>
                     this.categories = categories.sort(Helper.sortBy('priority', 'asc')));
-        })
+        });
     }
 
     onButtonAddClick() {

@@ -43,7 +43,7 @@ import { StatsComponent } from './stats/stats.component';
         HistoryComponent,
         SettingsComponent,
         ExceptionDialog,
-        
+
         DraggableDirective
     ],
     imports: [

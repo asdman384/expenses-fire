@@ -3,8 +3,8 @@ import { Directive, ElementRef, OnDestroy, Renderer2, Output, EventEmitter, Inpu
 @Directive({ selector: '[dDraggable]' })
 export class DraggableDirective implements OnDestroy {
 
-    @Output() onPutBack = new EventEmitter<{ shift: number, element: HTMLElement }>();
-    @Output() onMove = new EventEmitter<{ shift: number, element: HTMLElement }>();
+    @Output() onPutBack = new EventEmitter<{ shift: number, element: HTMLElement; }>();
+    @Output() onMove = new EventEmitter<{ shift: number, element: HTMLElement; }>();
 
     @Input() disableDrag: boolean = false;
 
@@ -16,7 +16,7 @@ export class DraggableDirective implements OnDestroy {
         private renderer: Renderer2
     ) {
         this.element = el.nativeElement;
-        this.element.addEventListener('touchstart', this.onTouchStart)
+        this.element.addEventListener('touchstart', this.onTouchStart);
     }
 
     onTouchStart = (event: TouchEvent) => {
@@ -26,7 +26,7 @@ export class DraggableDirective implements OnDestroy {
 
         this.originPos = this.getPos(event);
         this.pickUp();
-    }
+    };
 
     private pickUp() {
         this.subscribeEvents();
@@ -45,18 +45,18 @@ export class DraggableDirective implements OnDestroy {
         this.renderer.removeStyle(this.element, '-o-transform');
         this.unsubscribe();
 
-    }
+    };
 
     private subscribeEvents() {
-        this.element.addEventListener('touchmove', this.onPointerMove)
-        this.element.addEventListener('touchend', this.putBack)
-        this.element.addEventListener('touchcancel', this.putBack)
+        this.element.addEventListener('touchmove', this.onPointerMove);
+        this.element.addEventListener('touchend', this.putBack);
+        this.element.addEventListener('touchcancel', this.putBack);
     }
 
     private onPointerMove = (event: TouchEvent) => {
         if (!this.disableDrag)
             this.moveTo(this.getPos(event));
-    }
+    };
 
     private moveTo(pos: IPosition) {
         let shift = pos.x - this.originPos.x;

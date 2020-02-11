@@ -20,8 +20,8 @@ export class Database {
     public static todayQueryFn: QueryFn = ref => {
         return ref
             .where('date', '>=', firestore.Timestamp.fromMillis(new Date().setHours(0, 0, 0, 0)))
-            .where('date', '<=', firestore.Timestamp.fromMillis(new Date().setHours(23, 59, 59, 999)))
-    }
+            .where('date', '<=', firestore.Timestamp.fromMillis(new Date().setHours(23, 59, 59, 999)));
+    };
 
     public static toMonthQueryFn: QueryFn = ref => {
         let current = new Date();
@@ -34,7 +34,7 @@ export class Database {
         return ref
             .where('date', '>=', firestore.Timestamp.fromMillis(start.setHours(0, 0, 0, 0)))
             .where('date', '<=', firestore.Timestamp.fromMillis(end.setHours(23, 59, 59, 999)));
-    }
+    };
 
     constructor(
         private fireStore: AngularFirestore,
@@ -44,7 +44,7 @@ export class Database {
     public addExpense(userExpense: UserExpense): Promise<any> {
         return this.fireStore
             .collection(this.expTableSuffix + userExpense.userId)
-            .add(ExpenseConverter.toFirestore(userExpense.expense))
+            .add(ExpenseConverter.toFirestore(userExpense.expense));
     }
 
     public deleteExpense(id: string, userId?: string): Promise<void> {
@@ -116,7 +116,7 @@ export class Database {
     }
 
     public getAllCategoriesMap(): Observable<Map<string, CategoryInfo>> {
-        let setReducer = (p: Map<string, CategoryInfo>, c: CategoryInfo) => { p.set(c.id, c); return p };
+        let setReducer = (p: Map<string, CategoryInfo>, c: CategoryInfo) => { p.set(c.id, c); return p; };
 
         return this.getAllCategories()
             .pipe(map(docs => docs.reduce(setReducer, new Map<string, CategoryInfo>())));
@@ -168,4 +168,4 @@ const ExpenseConverter = {
 
         return expense;
     }
-}
+};

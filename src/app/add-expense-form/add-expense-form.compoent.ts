@@ -37,7 +37,7 @@ export class AddExpenseFormComponent implements OnInit {
             this.categories = this.database.getAllCategories()
                 .pipe(map(categories => categories.sort(Helper.sortBy('priority', 'asc'))));
             this.userSettings = this.database.getAllUserSettings();
-        })
+        });
     }
 
     onButtonAddClick() {

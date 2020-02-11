@@ -59,7 +59,7 @@ export class StatsComponent implements OnInit {
             this.userSelect.setValue(user.uid);
             this.monthSelect.setValue(new Date().getMonth() + '');
             this.yearSelect.setValue(new Date().getFullYear() + '');
-        })
+        });
 
     }
 
@@ -67,7 +67,7 @@ export class StatsComponent implements OnInit {
         this.aggregator$.next(expenses =>
             Helper.groupBy<ExpenseNcategory>(expenses, 'catId')[row.catId].sort(Helper.sortBy('amount')));
 
-        this.columnsToDisplay = ['date', 'amount', 'comment']
+        this.columnsToDisplay = ['date', 'amount', 'comment'];
     }
 
     clickBack() {

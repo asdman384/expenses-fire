@@ -5,7 +5,7 @@ export class UserExpense {
     }
 
     userId: string;
-    expense: Expense
+    expense: Expense;
 }
 
 export class Expense {
@@ -24,4 +24,4 @@ export class ExpenseDto {
     comm?: string;
 }
 
-export type ExpenseNcategory = (Expense & { categoryName: string })
+export type ExpenseNcategory = (Expense & { categoryName: string; });

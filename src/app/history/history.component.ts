@@ -53,18 +53,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
         else {
             this.disableDrag = true;
         }
-    }
+    };
 
     private docToucend = (event: Event) => {
-        this.disableDrag = false
-    }
+        this.disableDrag = false;
+    };
 
     intervalRadioGroupChange(change: MatRadioChange) {
         this.queryFnSubject.next(
             change.value === 'today' ? Database.todayQueryFn : Database.toMonthQueryFn);
     }
 
-    onMove(event: { shift: number, element: HTMLElement }, row: ExpenseNcategory) {
+    onMove(event: { shift: number, element: HTMLElement; }, row: ExpenseNcategory) {
         this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 0.5)';
         if (event.shift > 100)
             this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 1)';
@@ -72,17 +72,17 @@ export class HistoryComponent implements OnInit, OnDestroy {
         this.preventDocumentScroll = true;
     }
 
-    onPutBack(event: { shift: number, element: HTMLElement }, row: ExpenseNcategory) {
+    onPutBack(event: { shift: number, element: HTMLElement; }, row: ExpenseNcategory) {
         this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 0.5)';
 
         if (event.shift > 100)
-            this.database.deleteExpense(row.id)
+            this.database.deleteExpense(row.id);
 
         this.preventDocumentScroll = false;
     }
 
     ngOnDestroy(): void {
-        document.removeEventListener('touchmove', this.docTouchmove)
+        document.removeEventListener('touchmove', this.docTouchmove);
         document.removeEventListener('touchend', this.docToucend);
     }
 }

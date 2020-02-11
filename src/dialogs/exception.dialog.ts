@@ -15,7 +15,7 @@ export class ExceptionDialog {
     ) { }
 
     onCopyClick(): void {
-        this.errortext.nativeElement.select()
+        this.errortext.nativeElement.select();
         this.errortext.nativeElement.setSelectionRange(0, 999999);
         document.execCommand('copy');
     }
