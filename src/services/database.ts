@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, QueryFn } from '@angular/fire/firestore';
+import { AngularFirestore, QueryFn, CollectionReference } from '@angular/fire/firestore';
 import { firestore } from 'firebase/app';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
@@ -17,11 +17,10 @@ export class Database {
     private expTableSuffix = 'exps-';
     private categoriesTable = 'categories';
 
-    public static todayQueryFn: QueryFn = ref => {
-        return ref
-            .where('date', '>=', firestore.Timestamp.fromMillis(new Date().setHours(0, 0, 0, 0)))
-            .where('date', '<=', firestore.Timestamp.fromMillis(new Date().setHours(23, 59, 59, 999)));
-    };
+    public static dateQueryFn = (date: Date): QueryFn =>
+        (ref: CollectionReference) => ref
+            .where('date', '>=', firestore.Timestamp.fromMillis(date.setHours(0, 0, 0, 0)))
+            .where('date', '<=', firestore.Timestamp.fromMillis(date.setHours(23, 59, 59, 999)));
 
     public static toMonthQueryFn: QueryFn = ref => {
         let current = new Date();
@@ -75,7 +74,6 @@ export class Database {
             .reverse()
             .map((e: Expense) =>
                 ({ ...e, categoryName: catMap.has(e.catId) ? catMap.get(e.catId).name : e.catId }));
-
     }
 
     public getMonthExpenses(month: number, y?: number, userId?: string): Observable<ExpenseNcategory[]> {

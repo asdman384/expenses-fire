@@ -19,6 +19,7 @@ export class AddExpenseFormComponent implements OnInit {
     value: UserExpense = new UserExpense();
     @Output() onAddClick = new EventEmitter<UserExpense>();
     @Output() onUserChanged = new EventEmitter<string>();
+    @Output() onDateChanged = new EventEmitter<Date>();
 
     categories: Observable<CategoryInfo[]>;
     userSettings: Observable<UserSetting[]>;

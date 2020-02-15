@@ -20,6 +20,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExceptionDialog } from 'src/dialogs/exception.dialog';
@@ -61,6 +62,7 @@ import { StatsComponent } from './stats/stats.component';
         DragDropModule,
         ClipboardModule,
 
+        MatTooltipModule,
         MatTableModule,
         MatProgressBarModule,
         MatProgressSpinnerModule,

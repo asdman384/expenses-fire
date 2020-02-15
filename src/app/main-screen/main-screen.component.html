@@ -1,9 +1,16 @@
 <mat-card>
     <mat-progress-bar *ngIf="loading" class="card-progress" mode="indeterminate"></mat-progress-bar>
     <add-expense-form (onAddClick)="addExpenseForm_onAddClick($event)"
-        (onUserChanged)="historyComponent.userId = $event"></add-expense-form>
+        (onUserChanged)="addExpenseForm_onUserChanged($event)" (onDateChanged)="addExpenseForm_onDateChanged($event)">
+    </add-expense-form>
 </mat-card>
 
 <mat-card>
-    <history #historyComponent></history>
+    <div class="controls">
+        <mat-radio-group [(ngModel)]="radioGroupValue" color="primary" (change)="intervalRadioGroupChange($event)">
+            <mat-radio-button value="today">{{dateLabel}}</mat-radio-button> &nbsp;
+            <mat-radio-button value="month">Month</mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <history [dataSource]="dataSource"></history>
 </mat-card>

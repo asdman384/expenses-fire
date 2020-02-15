@@ -1,10 +1,6 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { QueryFn } from '@angular/fire/firestore';
-import { MatRadioChange } from '@angular/material/radio';
 import { MatTable } from '@angular/material/table';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { switchMap, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ExpenseNcategory } from 'src/models/expense-info';
 import { Database } from 'src/services/database';
 
@@ -15,34 +11,22 @@ import { Database } from 'src/services/database';
 })
 export class HistoryComponent implements OnInit, OnDestroy {
 
-    @Input() set userId(value) {
-        this.userIdSubject.next(value);
-    }
-
-    disableDrag: boolean = false;
+    @Input()
     dataSource: Observable<ExpenseNcategory[]>;
-    private queryFnSubject = new BehaviorSubject<QueryFn>(Database.todayQueryFn);
-    private userIdSubject = new BehaviorSubject<string>(null);
-    private preventDocumentScroll: boolean = false;
 
-    @ViewChild(MatTable, { static: true, read: ElementRef }) matTable: ElementRef<HTMLTableElement>;
+    private preventDocumentScroll: boolean = false;
+    disableDrag: boolean = false;
+
+    @ViewChild(MatTable, { static: true, read: ElementRef })
+    matTable: ElementRef<HTMLTableElement>;
 
     constructor(
-        public afAuth: AngularFireAuth,
-        private database: Database,
+        private database: Database
     ) { }
 
     ngOnInit(): void {
         document.addEventListener('touchmove', this.docTouchmove, { passive: false });
-        document.addEventListener('touchend', this.docToucend, { passive: false });
-
-        this.dataSource = combineLatest(
-            this.afAuth.user,
-            this.queryFnSubject,
-            this.userIdSubject
-        ).pipe(
-            filter(([user, queryFn, userId]) => !!user),
-            switchMap(([user, queryFn, userId]) => this.database.getExpensesNcategory(queryFn, userId)));
+        document.addEventListener('touchend', this.docTouchend, { passive: false });
     }
 
     private docTouchmove = (event: Event) => {
@@ -55,16 +39,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
         }
     };
 
-    private docToucend = (event: Event) => {
-        this.disableDrag = false;
-    };
+    private docTouchend = (event: Event) => { this.disableDrag = false; };
 
-    intervalRadioGroupChange(change: MatRadioChange) {
-        this.queryFnSubject.next(
-            change.value === 'today' ? Database.todayQueryFn : Database.toMonthQueryFn);
-    }
-
-    onMove(event: { shift: number, element: HTMLElement; }, row: ExpenseNcategory) {
+    onMove(event: { shift: number, element: HTMLElement; }) {
         this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 0.5)';
         if (event.shift > 100)
             this.matTable.nativeElement.style.backgroundColor = 'rgba(255, 127, 80, 1)';
@@ -83,6 +60,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         document.removeEventListener('touchmove', this.docTouchmove);
-        document.removeEventListener('touchend', this.docToucend);
+        document.removeEventListener('touchend', this.docTouchend);
     }
 }
