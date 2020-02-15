@@ -1,7 +1,11 @@
+:host {
+    width: 65vw;
+    display: block;
+}
+
 .pre {
     display: block;
     font-family: monospace;
     white-space: pre;
-    width: 65vh;
     overflow-y: auto;
 }

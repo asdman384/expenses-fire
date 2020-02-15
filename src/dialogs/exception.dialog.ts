@@ -8,15 +8,16 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class ExceptionDialog {
 
-    @ViewChild('errortext', { static: true }) errortext: ElementRef<HTMLTextAreaElement>;
-
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: string
     ) { }
 
-    onCopyClick(): void {
-        this.errortext.nativeElement.select();
-        this.errortext.nativeElement.setSelectionRange(0, 999999);
-        document.execCommand('copy');
+    onShareClick() {
+        const shareData = {
+            title: 'Share error stack',
+            text: this.data,
+        };
+
+        navigator.share(shareData);
     }
 }

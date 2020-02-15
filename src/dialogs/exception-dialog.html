@@ -1,8 +1,14 @@
 <h2 mat-dialog-title>Error</h2>
 <mat-dialog-content>
-    <textarea #errortext class="pre" matInput cdkTextareaAutosize contenteditable="true">{{data}}</textarea>
+    <mat-form-field class="full-width">
+        <textarea style="overflow-y: hidden;" #errortext class="pre" matInput cdkTextareaAutosize readonly
+            contenteditable="true">
+            {{data}}
+        </textarea>
+    </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button cdkFocusInitial (click)="onCopyClick()">Copy</button>
+    <button mat-button cdkFocusInitial (click)="onShareClick()">Share</button>
+    <button mat-button [cdkCopyToClipboard]="data">Copy</button>
     <button mat-button mat-dialog-close="true">Close</button>
 </mat-dialog-actions>

@@ -60,6 +60,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     };
 
     intervalRadioGroupChange(change: MatRadioChange) {
+        throw new Error('asd');
         this.queryFnSubject.next(
             change.value === 'today' ? Database.todayQueryFn : Database.toMonthQueryFn);
     }

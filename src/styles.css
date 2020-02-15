@@ -55,3 +55,7 @@ mat-card {
 .flex-row>*:not(:last-child) {
     margin-right: 10px;
 }
+
+exception-dialog .mat-form-field-underline {
+    height: 0 !important;
+}
