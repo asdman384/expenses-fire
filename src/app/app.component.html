@@ -17,6 +17,9 @@
                 <a mat-menu-item routerLink="/stats">
                     <mat-icon>notes</mat-icon> Stats
                 </a>
+                <a mat-menu-item routerLink="/chart">
+                    <mat-icon>insert_chart_outlined</mat-icon> Chart
+                </a>
                 <a mat-menu-item routerLink="/settings">
                     <mat-icon>settings</mat-icon> Settings
                 </a>
@@ -38,7 +41,7 @@
     </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="content" *ngIf="afAuth.user | async as user; else loginOptions">
+<div class="content" *ngIf="isLoggedIn; else loginOptions">
     <router-outlet></router-outlet>
 </div>
 

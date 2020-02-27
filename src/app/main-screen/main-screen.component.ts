@@ -19,7 +19,7 @@ export class MainScreenComponent implements OnInit {
     radioGroupValue = 'today';
     dateLabel: string = 'Today';
     loading: boolean = false;
-    dataSource: Observable<ExpenseNcategory[]>;
+    historyDataSource: Observable<ExpenseNcategory[]>;
     private userIdSubject = new BehaviorSubject<string>(null);
     private queryFnSubject = new BehaviorSubject<QueryFn>(Database.dateQueryFn(new Date()));
 
@@ -30,7 +30,7 @@ export class MainScreenComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.dataSource = combineLatest(
+        this.historyDataSource = combineLatest(
             this.afAuth.user,
             this.queryFnSubject,
             this.userIdSubject

@@ -14,7 +14,8 @@ import { Database } from 'src/services/database';
 export class AppComponent implements OnInit {
 
     title = 'expenses';
-    loading = true;
+    loading: boolean = true;
+    isLoggedIn: boolean = true;
 
     constructor(
         public router: Router,
@@ -24,10 +25,14 @@ export class AppComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.afAuth.user.subscribe(result => {
+            this.loading = false;
+            this.isLoggedIn = !!result;
+        });
+
         this.afAuth.auth
             .getRedirectResult()
             .then(result => {
-                this.loading = false;
                 if (result.operationType === "signIn" && result.user) {
                     this.database.createUserSettingIfNotExist(
                         result.user.uid, result.user.displayName, result.user.email);
