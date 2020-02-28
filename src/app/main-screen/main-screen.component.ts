@@ -3,7 +3,7 @@ import { UserExpense, ExpenseNcategory } from 'src/models/expense-info';
 import { Database } from 'src/services/database';
 import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { filter, switchMap } from 'rxjs/operators';
+import { filter, switchMap, map } from 'rxjs/operators';
 import { QueryFn } from '@angular/fire/firestore';
 import { MatRadioChange } from '@angular/material/radio';
 import { DatePipe } from '@angular/common';
@@ -18,7 +18,8 @@ export class MainScreenComponent implements OnInit {
 
     radioGroupValue = 'today';
     dateLabel: string = 'Today';
-    loading: boolean = false;
+    adding: boolean = false;
+    historyLoading: boolean = false;
     historyDataSource: Observable<ExpenseNcategory[]>;
     private userIdSubject = new BehaviorSubject<string>(null);
     private queryFnSubject = new BehaviorSubject<QueryFn>(Database.dateQueryFn(new Date()));
@@ -36,7 +37,14 @@ export class MainScreenComponent implements OnInit {
             this.userIdSubject
         ).pipe(
             filter(([user, queryFn, userId]) => !!user),
-            switchMap(([user, queryFn, userId]) => this.database.getExpensesNcategory(queryFn, userId)));
+            switchMap(([user, queryFn, userId]) => {
+                this.historyLoading = true;
+                return this.database.getExpensesNcategory(queryFn, userId);
+            }),
+            map(data => {
+                this.historyLoading = false;
+                return data;
+            }));
     }
 
     intervalRadioGroupChange(change: MatRadioChange) {
@@ -45,8 +53,8 @@ export class MainScreenComponent implements OnInit {
     }
 
     addExpenseForm_onAddClick(expenseInfo: UserExpense) {
-        this.loading = true;
-        this.database.addExpense(expenseInfo).then(_ => this.loading = false);
+        this.adding = true;
+        this.database.addExpense(expenseInfo).then(_ => this.adding = false);
     }
 
     addExpenseForm_onUserChanged(userId: string) {
