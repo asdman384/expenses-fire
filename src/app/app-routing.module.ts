@@ -7,12 +7,24 @@ import { SettingsComponent } from './settings/settings.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['']);
 
-const routes: Routes = [
-    { path: '', component: MainScreenComponent },
-    { path: 'stats', component: StatsComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
-    { path: 'settings', component: SettingsComponent, canActivate: [AngularFireAuthGuard], data: { authGuardPipe: redirectUnauthorizedToLogin } },
-    { path: 'chart', loadChildren: () => import('./chart/chart.module').then(m => m.ChartModule), canActivate: [AngularFireAuthGuard] },
-];
+const routes: Routes = [{
+    path: '',
+    component: MainScreenComponent
+}, {
+    path: 'stats',
+    component: StatsComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+}, {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin }
+}, {
+    path: 'chart',
+    loadChildren: () => import('./chart/chart.module').then(m => m.ChartModule),
+    canActivate: [AngularFireAuthGuard]
+}];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],

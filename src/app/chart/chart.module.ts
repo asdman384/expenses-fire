@@ -1,15 +1,21 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { ChartRoutingModule } from './chart-routing.module';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { ChartComponent } from './chart.component';
 
 
+const routes: Routes = [{ path: '', component: ChartComponent }];
+
 @NgModule({
-  declarations: [ChartComponent],
-  imports: [
-    CommonModule,
-    ChartRoutingModule
-  ]
+    declarations: [
+        ChartComponent
+    ],
+    imports: [
+        RouterModule.forChild(routes),
+        CommonModule,
+    ],
+    exports: [
+        RouterModule
+    ]
 })
 export class ChartModule { }
