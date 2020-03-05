@@ -35,6 +35,7 @@ import { HistoryComponent } from './history/history.component';
 import { MainScreenComponent } from './main-screen/main-screen.component';
 import { SettingsComponent } from './settings/settings.component';
 import { StatsComponent } from './stats/stats.component';
+import { CalculatorComponent } from 'src/dialogs/calculator/calculator.component';
 
 @NgModule({
     declarations: [
@@ -46,7 +47,9 @@ import { StatsComponent } from './stats/stats.component';
         SettingsComponent,
         ExceptionDialog,
 
-        DraggableDirective
+        DraggableDirective,
+
+        CalculatorComponent
     ],
     imports: [
         FormsModule,

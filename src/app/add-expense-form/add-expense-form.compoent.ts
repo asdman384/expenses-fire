@@ -1,12 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Helper } from 'src/helpers/helper';
 import { CategoryInfo } from 'src/models/category-info';
 import { UserExpense } from 'src/models/expense-info';
 import { UserSetting } from 'src/models/users-setting';
 import { Database } from 'src/services/database';
+import { MatDialog } from '@angular/material/dialog';
+import { CalculatorComponent } from 'src/dialogs/calculator/calculator.component';
 
 @Component({
     selector: 'add-expense-form',
@@ -25,7 +27,8 @@ export class AddExpenseFormComponent implements OnInit {
 
     constructor(
         public afAuth: AngularFireAuth,
-        private database: Database
+        private database: Database,
+        public dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -44,6 +47,21 @@ export class AddExpenseFormComponent implements OnInit {
     onButtonAddClick() {
         this.onAddClick.emit(this.value);
         this.reset();
+    }
+
+    showCalc(e: MouseEvent) {
+        var dialogEvents$ = new BehaviorSubject<string>(this.value.expense.amount + '');
+        dialogEvents$.subscribe(val => this.value.expense.amount = +val || null);
+
+        e.stopPropagation();
+        this.dialog
+            .open(CalculatorComponent, {
+                data: dialogEvents$,
+                position: { top: e.y + 'px', left: e.x + 'px', }
+            })
+            .afterClosed()
+            .subscribe(dialogEvents$.unsubscribe);
+
     }
 
     private reset() {
