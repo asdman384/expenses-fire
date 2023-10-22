@@ -20,8 +20,8 @@ jobs:
            
         run: |
           keys='{ "API_KEY2": "'
-          keys+= '"$api_key"'
-          keys+= '" }''
+          keys+="$api_key"
+          keys+='" }''
           # echo "${{ secrets.API_KEY }}"
           # echo "${{ vars.API_KEY2 }}"
           echo $keys
