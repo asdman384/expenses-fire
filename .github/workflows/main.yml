@@ -1,9 +1,5 @@
 name: build
 
-env:
-  # Setting an environment variable with the value of a configuration variable
-  api_key: ${{ vars.API_KEY2 }}
-  
 on:
   push:
     branches: ['master']
@@ -20,8 +16,7 @@ jobs:
            
         run: |
           keys='{ "API_KEY2": "'
-          keys+="$api_key"
+          keys+="$vars.API_KEY2"
           keys+='" }'
-          # echo "${{ secrets.API_KEY }}"
-          # echo "${{ vars.API_KEY2 }}"
+
           echo $keys
