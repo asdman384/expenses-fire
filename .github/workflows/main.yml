@@ -16,7 +16,7 @@ jobs:
            
         run: |
           keys='{ "API_KEY2": "'
-          keys+="$vars.API_KEY2"
+          keys+="{$vars.API_KEY2}"
           keys+='" }'
 
           echo $keys
