@@ -15,6 +15,9 @@ jobs:
       - name: Build      
            
         run: |
+          keys='{ "API_KEY2": "'
+          keys+= "${{ vars.API_KEY2 }}"
+          keys+= '" }''
           # echo "${{ secrets.API_KEY }}"
           # echo "${{ vars.API_KEY2 }}"
-          echo '{  "API_KEY2": "$vars:API_KEY2" }'
+          echo $keys
