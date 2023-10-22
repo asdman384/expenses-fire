@@ -15,7 +15,6 @@ jobs:
       - name: Build      
            
         run: |
-          echo "${{ secrets.API_KEY }}"
-          echo "${{ vars.API_KEY2 }}"
-          # echo "${{ env.API_KEY2 }}"
-          # echo '{  "API_KEY": "${ env:API_KEY }", "API_KEY2": "${ env:API_KEY2 }" }'
+          # echo "${{ secrets.API_KEY }}"
+          # echo "${{ vars.API_KEY2 }}"
+          echo '{  "API_KEY2": "$vars:API_KEY2" }'
