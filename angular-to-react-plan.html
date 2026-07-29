@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular → React · Job-Ready Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1320;          /* deep slate-ink background */
+    --ink-2:#111a29;        /* raised background */
+    --panel:#16202f;        /* card surface */
+    --panel-2:#1b2739;      /* nested surface */
+    --border:#26364d;       /* hairline */
+    --border-soft:#1f2c40;
+    --text:#e7eef6;         /* primary */
+    --muted:#8ea0b6;        /* secondary */
+    --faint:#5f7085;        /* tertiary */
+    --react:#61dafb;        /* destination accent */
+    --react-dim:#2b6b7d;
+    --angular:#dd3a4a;      /* origin accent (Angular = red) */
+    --angular-dim:#5a2730;
+    --ok:#5fd48b;           /* completed */
+    --shadow:0 18px 40px -20px rgba(0,0,0,.7);
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:"IBM Plex Sans",system-ui,sans-serif;
+    --display:"Space Grotesk",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(900px 500px at 88% -6%, rgba(97,218,251,.10), transparent 60%),
+      radial-gradient(700px 460px at 4% 2%, rgba(221,58,74,.09), transparent 55%),
+      var(--ink);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:5rem;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(13,19,32,.82);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .head-inner{max-width:940px;margin:0 auto;padding:.85rem 1.4rem}
+  .head-top{display:flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+  .glyph{
+    font-family:var(--mono);font-weight:700;font-size:.9rem;
+    display:inline-flex;align-items:center;gap:.5rem;
+    border:1px solid var(--border);border-radius:8px;padding:.34rem .6rem;
+    background:var(--panel);white-space:nowrap;
+  }
+  .glyph .ng{color:var(--angular)}
+  .glyph .rc{color:var(--react)}
+  .glyph .arw{color:var(--faint)}
+  .head-title{font-family:var(--display);font-weight:600;font-size:1.02rem;letter-spacing:-.01em;flex:1;min-width:180px}
+  .head-title small{display:block;font-family:var(--mono);font-weight:400;font-size:.68rem;color:var(--faint);letter-spacing:.02em;margin-top:.15rem;text-transform:uppercase}
+  .reset{
+    font-family:var(--mono);font-size:.72rem;color:var(--muted);
+    background:transparent;border:1px solid var(--border);border-radius:7px;
+    padding:.4rem .7rem;cursor:pointer;transition:.18s;
+  }
+  .reset:hover{color:var(--text);border-color:var(--faint)}
+  .reset:focus-visible{outline:2px solid var(--react);outline-offset:2px}
+
+  .progress-wrap{margin-top:.75rem;display:flex;align-items:center;gap:.8rem}
+  .track{flex:1;height:8px;border-radius:20px;background:var(--panel-2);overflow:hidden;border:1px solid var(--border-soft)}
+  .fill{height:100%;width:0%;border-radius:20px;
+    background:linear-gradient(90deg,var(--angular),#c76a4f 42%,var(--react));
+    transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .pct{font-family:var(--mono);font-size:.8rem;color:var(--react);min-width:3ch;text-align:right}
+  .sync{font-family:var(--mono);font-size:.66rem;color:var(--faint);min-width:6ch}
+
+  /* ---------- Layout ---------- */
+  main{max-width:940px;margin:0 auto;padding:2.2rem 1.4rem 0}
+
+  .lede{
+    font-size:1.02rem;color:var(--muted);max-width:64ch;margin-bottom:.6rem;
+  }
+  .lede strong{color:var(--text);font-weight:600}
+  .lede .cy{color:var(--react)}
+  .meta-row{display:flex;gap:1.4rem;flex-wrap:wrap;font-family:var(--mono);font-size:.74rem;color:var(--faint);margin:1.1rem 0 2.6rem;padding-top:1rem;border-top:1px solid var(--border-soft)}
+  .meta-row b{color:var(--muted);font-weight:500}
+
+  /* ---------- Section heading ---------- */
+  .sec-label{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--faint);
+    display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem;
+  }
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--border-soft)}
+
+  /* ---------- Rosetta ---------- */
+  .rosetta{margin-bottom:3.4rem}
+  .rosetta-note{color:var(--muted);font-size:.92rem;max-width:60ch;margin-bottom:1.3rem}
+  .map-grid{display:grid;grid-template-columns:1fr;gap:.55rem}
+  .map-row{
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:.55rem;
+  }
+  .cell{border:1px solid var(--border-soft);border-radius:9px;padding:.6rem .8rem;background:var(--panel);display:flex;flex-direction:column;justify-content:center}
+  .cell .k{font-family:var(--mono);font-size:.82rem;font-weight:500}
+  .cell .d{font-size:.74rem;color:var(--faint);margin-top:.12rem}
+  .cell.from{border-left:3px solid var(--angular)}
+  .cell.from .k{color:#f0a3ac}
+  .cell.to{border-left:3px solid var(--react)}
+  .cell.to .k{color:var(--react)}
+  .to-arrow{display:flex;align-items:center;justify-content:center;font-family:var(--mono);color:var(--faint);font-size:.95rem;padding:0 .1rem}
+
+  /* ---------- Phases ---------- */
+  .phase{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:1.35rem 1.4rem;margin-bottom:1.15rem;box-shadow:var(--shadow);
+  }
+  .phase-head{display:flex;align-items:baseline;gap:.9rem;flex-wrap:wrap;margin-bottom:.35rem}
+  .phase-num{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--react);letter-spacing:.05em}
+  .phase-title{font-family:var(--display);font-weight:600;font-size:1.16rem;letter-spacing:-.01em;flex:1;min-width:160px}
+  .phase-est{font-family:var(--mono);font-size:.7rem;color:var(--faint);white-space:nowrap}
+  .phase-count{font-family:var(--mono);font-size:.7rem;color:var(--muted);white-space:nowrap}
+  .phase-count.done{color:var(--ok)}
+  .phase-goal{color:var(--muted);font-size:.88rem;margin:.15rem 0 1.05rem;max-width:66ch}
+
+  .items{list-style:none;display:flex;flex-direction:column;gap:.15rem}
+  .item{display:flex;gap:.8rem;padding:.62rem .55rem;border-radius:9px;align-items:flex-start;transition:background .15s}
+  .item:hover{background:var(--panel-2)}
+  .item input{
+    appearance:none;-webkit-appearance:none;flex:none;
+    width:20px;height:20px;margin-top:.12rem;border:1.5px solid var(--faint);
+    border-radius:6px;cursor:pointer;position:relative;transition:.18s;background:var(--ink-2);
+  }
+  .item input:hover{border-color:var(--react)}
+  .item input:checked{background:var(--react);border-color:var(--react)}
+  .item input:checked::after{
+    content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid var(--ink);border-width:0 2.5px 2.5px 0;transform:rotate(43deg);
+  }
+  .item input:focus-visible{outline:2px solid var(--react);outline-offset:2px}
+  .item-body{flex:1;min-width:0}
+  .item label{cursor:pointer;font-size:.97rem;font-weight:500;display:inline}
+  .item.checked label{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--react-dim)}
+  .item .note{display:block;font-size:.8rem;color:var(--faint);margin-top:.16rem}
+  .item .note .ng-tag{color:#c9737f;font-family:var(--mono);font-size:.74rem}
+  .item a.doc{
+    font-family:var(--mono);font-size:.72rem;color:var(--react);text-decoration:none;
+    border-bottom:1px dotted var(--react-dim);margin-left:.15rem;white-space:nowrap;
+  }
+  .item a.doc:hover{border-bottom-style:solid}
+  .item a.doc:focus-visible{outline:2px solid var(--react);outline-offset:2px;border-radius:2px}
+  .item a.doc::after{content:" ↗";color:var(--faint)}
+  .optional-tag{font-family:var(--mono);font-size:.62rem;color:var(--faint);border:1px solid var(--border);border-radius:5px;padding:.05rem .35rem;margin-left:.4rem;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em}
+
+  footer{max-width:940px;margin:2.6rem auto 0;padding:1.6rem 1.4rem 0;border-top:1px solid var(--border-soft);color:var(--faint);font-size:.82rem}
+  footer code{font-family:var(--mono);color:var(--muted);background:var(--panel);padding:.1rem .35rem;border-radius:5px;border:1px solid var(--border-soft)}
+
+  @media (max-width:640px){
+    .map-row{grid-template-columns:1fr auto 1fr}
+    .cell{padding:.5rem .55rem}
+    .cell .k{font-size:.72rem}
+    .cell .d{display:none}
+    .head-title{font-size:.94rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <div class="head-top">
+      <span class="glyph"><span class="ng">ng</span><span class="arw">→</span><span class="rc">⚛</span></span>
+      <div class="head-title">
+        Angular → React: The Job-Ready Port
+        <small>A migration plan for a senior Angular engineer</small>
+      </div>
+      <button class="reset" id="resetBtn" type="button">Reset progress</button>
+    </div>
+    <div class="progress-wrap">
+      <div class="track"><div class="fill" id="fill"></div></div>
+      <span class="pct" id="pct">0%</span>
+      <span class="sync" id="sync">·</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <p class="lede">
+    You're not learning to program again — you're <strong>porting an existing mental model</strong>.
+    Every core idea you use in Angular has a React equivalent; the work is remapping muscle memory
+    and unlearning a few Angular reflexes. Skip anything you already own. The goal here is
+    <strong>job-ready</strong>: fundamentals first, then <span class="cy">Next.js</span>, with the
+    ecosystem pieces interviewers actually probe.
+  </p>
+  <div class="meta-row">
+    <span><b>Target:</b> interviews + real projects</span>
+    <span><b>Path:</b> React + Vite → Next.js</span>
+    <span><b>Pace:</b> ~4–6 wks full-time · ~8–10 part-time</span>
+    <span><b>Progress:</b> saved on this device</span>
+  </div>
+
+  <!-- ============ ROSETTA ============ -->
+  <section class="rosetta">
+    <div class="sec-label">The Rosetta Stone</div>
+    <p class="rosetta-note">
+      Read this once before the checklist. It's the fastest thing you can do — most of React is
+      already familiar under different names. The biggest reflex to unlearn: React has no
+      change detection loop. State changes trigger a re-render; that's the whole model.
+    </p>
+    <div class="map-grid">
+      <div class="map-row"><div class="cell from"><span class="k">@Component + template</span><span class="d">class with an HTML template</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">function component + JSX</span><span class="d">a function that returns markup</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">@Input()</span><span class="d">bound property</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">props</span><span class="d">plain function arguments</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">@Output() EventEmitter</span><span class="d">emit up to parent</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">callback props</span><span class="d">pass a function down</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">Services + DI</span><span class="d">injectable singletons</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">imports · Context · hooks</span><span class="d">no DI container needed</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">RxJS for async</span><span class="d">Observables everywhere</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">TanStack Query / promises</span><span class="d">RxJS is optional, rarely used</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">ngOnInit / ngOnDestroy</span><span class="d">lifecycle hooks</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">useEffect(setup, cleanup)</span><span class="d">one hook, return = teardown</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">[(ngModel)]</span><span class="d">two-way binding</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">value + onChange</span><span class="d">controlled input, one-way</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">*ngIf</span><span class="d">structural directive</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">{cond && &lt;X/&gt;}</span><span class="d">plain JS in JSX</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">*ngFor</span><span class="d">structural directive</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">list.map(x =&gt; &lt;X key/&gt;)</span><span class="d">stable key is mandatory</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">Pipes</span><span class="d">| currency, | date</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">plain functions · useMemo</span><span class="d">just call them in JSX</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">@ViewChild / ElementRef</span><span class="d">DOM / child access</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">useRef</span><span class="d">escape hatch, use sparingly</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">NgModules</span><span class="d">declarations + providers</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">ES modules</span><span class="d">nothing — just import/export</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">Angular Router</span><span class="d">RouterModule config</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">React Router · file routing</span><span class="d">Next.js routes by folder</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">Change detection / Zone.js</span><span class="d">automatic, magical</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">state → re-render</span><span class="d">explicit, predictable</span></div></div>
+      <div class="map-row"><div class="cell from"><span class="k">Reactive / Template Forms</span><span class="d">FormGroup, validators</span></div><div class="to-arrow">→</div><div class="cell to"><span class="k">React Hook Form</span><span class="d">controlled state + a library</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ PHASES ============ -->
+  <div class="sec-label">The Checklist</div>
+  <div id="phases"></div>
+</main>
+
+<footer>
+  <p>Check items off as you go — progress is stored per-device via the artifact's built-in storage (<code>window.storage</code>), not your browser. Doc links open React's official sources in a new tab. This plan is a route, not a rulebook; skip, reorder, and go deeper wherever your Angular background lets you.</p>
+</footer>
+
+<script>
+/* ---------------- Learning plan data ---------------- */
+const PLAN = [
+  {
+    num:"PHASE 00", title:"Setup & the mental shift", est:"~2–3 days",
+    goal:"Get a project running and internalize how React thinks differently from Angular. This is the phase where the framework, not the syntax, is the lesson.",
+    items:[
+      {id:"p0-vite", t:"Scaffold a React + Vite + TypeScript app", n:{tag:"Angular note:",txt:"like ng new, but you own the structure — no CLI conventions to memorize."}, url:"https://vitejs.dev/guide/"},
+      {id:"p0-devtools", t:"Install React DevTools & learn the component tree/profiler", n:{txt:"your new equivalent of Angular's debugging + Augury."}, url:"https://react.dev/learn/react-developer-tools"},
+      {id:"p0-quickstart", t:"Read the official Quick Start end to end", n:{txt:"one sitting; it reframes everything the Rosetta table listed."}, url:"https://react.dev/learn"},
+      {id:"p0-thinking", t:"Work through “Thinking in React”", n:{txt:"the core paradigm doc — top-down data flow, state placement."}, url:"https://react.dev/learn/thinking-in-react"},
+    ]
+  },
+  {
+    num:"PHASE 01", title:"Core fundamentals", est:"~4–6 days",
+    goal:"JSX, components, and one-way data flow. Fast for you — the concepts map directly, but the direction of data (always down) is the reflex to build.",
+    items:[
+      {id:"p1-jsx", t:"JSX & rendering markup", n:{tag:"Replaces:",txt:"Angular templates. It's JavaScript, not a separate template language."}, url:"https://react.dev/learn/writing-markup-with-jsx"},
+      {id:"p1-props", t:"Passing props to components", n:{tag:"= @Input():",txt:"but they're just arguments, and can be anything including functions."}, url:"https://react.dev/learn/passing-props-to-a-component"},
+      {id:"p1-cond", t:"Conditional rendering (&&, ternary, early return)", n:{tag:"Replaces:",txt:"*ngIf / *ngSwitch."}, url:"https://react.dev/learn/conditional-rendering"},
+      {id:"p1-lists", t:"Rendering lists & the rules of keys", n:{tag:"Replaces:",txt:"*ngFor + trackBy. Keys are non-negotiable — study why."}, url:"https://react.dev/learn/rendering-lists"},
+      {id:"p1-events", t:"Responding to events", n:{tag:"= (click):",txt:"onClick={handler}; pass the function, don't call it."}, url:"https://react.dev/learn/responding-to-events"},
+      {id:"p1-compose", t:"Component composition & children props", n:{txt:"React leans on composition instead of inheritance and content projection."}, url:"https://react.dev/learn/passing-props-to-a-component#passing-jsx-as-children"},
+    ]
+  },
+  {
+    num:"PHASE 02", title:"State & hooks", est:"~1 week",
+    goal:"The heart of React. Hooks replace lifecycle, DI, and much of RxJS. Master the rules and you've cleared the biggest conceptual gap from Angular.",
+    items:[
+      {id:"p2-usestate", t:"useState & state as a snapshot", n:{txt:"state updates are asynchronous and replace, not mutate."}, url:"https://react.dev/reference/react/useState"},
+      {id:"p2-render", t:"Render & commit — how re-rendering works", n:{tag:"Unlearn:",txt:"there is no Zone.js. A state set is the only trigger."}, url:"https://react.dev/learn/render-and-commit"},
+      {id:"p2-effect", t:"useEffect with dependencies & cleanup", n:{tag:"= ngOnInit/ngOnDestroy:",txt:"the return function is your teardown."}, url:"https://react.dev/reference/react/useEffect"},
+      {id:"p2-noeffect", t:"“You Might Not Need an Effect” (read twice)", n:{txt:"the #1 mistake Angular devs make — reaching for effects like they're lifecycle hooks."}, url:"https://react.dev/learn/you-might-not-need-an-effect"},
+      {id:"p2-ref", t:"useRef for DOM & mutable values", n:{tag:"= @ViewChild:",txt:"but an escape hatch, not a default tool."}, url:"https://react.dev/reference/react/useRef"},
+      {id:"p2-memo", t:"useMemo & useCallback (and when NOT to)", n:{txt:"understand referential identity before optimizing."}, url:"https://react.dev/reference/react/useMemo"},
+      {id:"p2-context", t:"useContext for shared state", n:{tag:"Closest to DI:",txt:"provide/consume without prop drilling."}, url:"https://react.dev/learn/passing-data-deeply-with-context"},
+      {id:"p2-custom", t:"Build custom hooks to extract logic", n:{tag:"= reusable Services:",txt:"this is where your service-oriented instincts pay off."}, url:"https://react.dev/learn/reusing-logic-with-custom-hooks"},
+      {id:"p2-rules", t:"Internalize the Rules of Hooks", n:{txt:"top level only, same order every render — non-obvious and interview-relevant."}, url:"https://react.dev/reference/rules/rules-of-hooks"},
+    ]
+  },
+  {
+    num:"PHASE 03", title:"Forms & effect patterns", est:"~3–4 days",
+    goal:"Controlled inputs replace two-way binding. Then adopt React Hook Form so you're not hand-rolling FormGroups.",
+    items:[
+      {id:"p3-controlled", t:"Controlled vs uncontrolled inputs", n:{tag:"Replaces:",txt:"[(ngModel)] — one-way value + onChange is the idiom."}, url:"https://react.dev/learn/reacting-to-input-with-state"},
+      {id:"p3-share", t:"Sharing & lifting state between components", n:{txt:"state lives at the lowest common parent."}, url:"https://react.dev/learn/sharing-state-between-components"},
+      {id:"p3-rhf", t:"React Hook Form: register, validation, resolvers", n:{tag:"= Reactive Forms:",txt:"the ecosystem-standard form library. Pair with Zod for schema validation."}, url:"https://react-hook-form.com/get-started"},
+    ]
+  },
+  {
+    num:"PHASE 04", title:"Routing", est:"~2–3 days",
+    goal:"Client-side routing with React Router. You'll switch to file-based routing in the Next.js phase, so keep this focused on the model.",
+    items:[
+      {id:"p4-router", t:"React Router: routes, nesting, links, params", n:{tag:"= Angular Router:",txt:"config-as-components; outlet becomes <Outlet/>."}, url:"https://reactrouter.com/start/library/routing"},
+      {id:"p4-nav", t:"Programmatic navigation & route data", n:{txt:"useNavigate / useParams / loaders."}, url:"https://reactrouter.com/start/library/navigating"},
+    ]
+  },
+  {
+    num:"PHASE 05", title:"State management", est:"~4–5 days",
+    goal:"You picked this. Learn the decision tree first — most apps need far less global state than Angular habits suggest. Then Redux Toolkit (interview staple) and Zustand (modern default).",
+    items:[
+      {id:"p5-when", t:"Decide: local state vs Context vs a store", n:{txt:"the judgment call matters more than any one library."}, url:"https://react.dev/learn/scaling-up-with-reducer-and-context"},
+      {id:"p5-rtk", t:"Redux Toolkit: slices, store, useSelector/useDispatch", n:{tag:"Interview staple:",txt:"know the flux flow and why RTK exists (boilerplate reduction)."}, url:"https://redux-toolkit.js.org/tutorials/quick-start"},
+      {id:"p5-zustand", t:"Zustand: a store as a hook", n:{txt:"minimal, no boilerplate — increasingly the default choice for new apps."}, url:"https://github.com/pmndrs/zustand"},
+      {id:"p5-compare", t:"Articulate when to use which (out loud)", n:{txt:"a common interview question — have a crisp answer."}, url:"https://redux.js.org/faq/general#when-should-i-use-redux"},
+    ]
+  },
+  {
+    num:"PHASE 06", title:"Data fetching", est:"~4–5 days",
+    goal:"You picked this too. TanStack Query is where your RxJS instincts translate best — caching, invalidation, and background refetch, minus the operator overload.",
+    items:[
+      {id:"p6-basics", t:"Fetching with fetch/axios + loading & error state", n:{txt:"understand the manual version before the library abstracts it."}, url:"https://react.dev/learn/synchronizing-with-effects#fetching-data"},
+      {id:"p6-queries", t:"TanStack Query: useQuery, keys, caching", n:{tag:"vs RxJS:",txt:"declarative server-state; query keys replace manual subscription management."}, url:"https://tanstack.com/query/latest/docs/framework/react/overview"},
+      {id:"p6-mutations", t:"Mutations & cache invalidation", n:{txt:"useMutation + invalidateQueries — the write path."}, url:"https://tanstack.com/query/latest/docs/framework/react/guides/mutations"},
+      {id:"p6-patterns", t:"Pagination, optimistic updates, refetch strategy", n:{txt:"the patterns that show up in real apps and interviews."}, url:"https://tanstack.com/query/latest/docs/framework/react/guides/paginated-queries"},
+    ]
+  },
+  {
+    num:"PHASE 07", title:"Performance & patterns", est:"~3–4 days",
+    goal:"Understand React's reconciliation so you optimize deliberately, not superstitiously. This is often what separates mid from senior in interviews.",
+    items:[
+      {id:"p7-preserve", t:"Preserving & resetting state (keys & structure)", n:{txt:"subtle, high-value, and frequently misunderstood."}, url:"https://react.dev/learn/preserving-and-resetting-state"},
+      {id:"p7-memo", t:"React.memo & render optimization", n:{txt:"know what causes a re-render before you memoize."}, url:"https://react.dev/reference/react/memo"},
+      {id:"p7-split", t:"Code splitting with lazy & Suspense", n:{tag:"= lazy modules:",txt:"route-level splitting, familiar territory."}, url:"https://react.dev/reference/react/lazy"},
+    ]
+  },
+  {
+    num:"PHASE 08", title:"Next.js — the meta-framework", est:"~1.5–2 weeks",
+    goal:"Where most React jobs actually live. The App Router and Server Components are a genuinely new model — budget real time here, it's the phase with the least Angular overlap.",
+    items:[
+      {id:"p8-learn", t:"Complete the official Next.js “Learn” course", n:{txt:"the fastest structured route into the App Router."}, url:"https://nextjs.org/learn"},
+      {id:"p8-routing", t:"App Router: folders, layouts, loading & error files", n:{tag:"= Angular Router:",txt:"but the file system IS the config."}, url:"https://nextjs.org/docs/app/building-your-application/routing"},
+      {id:"p8-rsc", t:"Server vs Client Components", n:{tag:"Brand new:",txt:"the single most important — and unfamiliar — Next.js concept. Learn the boundary."}, url:"https://nextjs.org/docs/app/building-your-application/rendering/server-components"},
+      {id:"p8-fetch", t:"Data fetching, caching & revalidation", n:{txt:"how server components fetch, and where TanStack Query still fits."}, url:"https://nextjs.org/docs/app/building-your-application/data-fetching/fetching"},
+      {id:"p8-render", t:"Rendering strategies: SSR, SSG, ISR", n:{txt:"know the tradeoffs — a guaranteed interview topic."}, url:"https://nextjs.org/docs/app/building-your-application/rendering"},
+      {id:"p8-actions", t:"Route Handlers & Server Actions", n:{txt:"your API layer and mutations without a separate backend."}, url:"https://nextjs.org/docs/app/building-your-application/routing/route-handlers"},
+      {id:"p8-deploy", t:"Deploy a Next.js app (Vercel)", n:{txt:"a live URL on your résumé beats a repo link."}, url:"https://nextjs.org/docs/app/building-your-application/deploying"},
+    ]
+  },
+  {
+    num:"PHASE 09", title:"Job-ready: build & interview", est:"~1.5–2 weeks",
+    goal:"Convert knowledge into evidence. One polished full-stack Next.js project plus sharp answers on the concepts interviewers love to probe.",
+    items:[
+      {id:"p9-project", t:"Ship one real Next.js project (auth + data + CRUD)", n:{txt:"depth over quantity — one impressive app beats five tutorials."}, url:"https://nextjs.org/learn/dashboard-app"},
+      {id:"p9-closures", t:"Master closures & stale-state bugs", n:{txt:"the classic “why is my state old inside a callback” interview question."}, url:"https://react.dev/learn/state-as-a-snapshot"},
+      {id:"p9-effect-iv", t:"Be able to explain useEffect pitfalls cold", n:{txt:"dependencies, cleanup, double-invoke in Strict Mode."}, url:"https://react.dev/learn/lifecycle-of-reactive-effects"},
+      {id:"p9-testing", t:"React Testing Library basics", n:{txt:"test behavior, not implementation — good to show even for front-of-mind confidence.", opt:true}, url:"https://testing-library.com/docs/react-testing-library/intro/"},
+      {id:"p9-story", t:"Write your Angular→React narrative", n:{txt:"frame 7 years of Angular as transferable senior judgment, not a restart."}, url:"https://react.dev/learn/thinking-in-react"},
+    ]
+  },
+];
+
+/* ---------------- Storage ---------------- */
+const STORE_KEY = "ng2react:progress:v1";
+let state = {};            // { itemId: true }
+let storageOK = true;
+
+const syncEl = document.getElementById("sync");
+function setSync(txt){ syncEl.textContent = txt; }
+
+async function loadState(){
+  setSync("loading…");
+  try{
+    const res = await window.storage.get(STORE_KEY, false);
+    if(res && res.value){ state = JSON.parse(res.value) || {}; }
+  }catch(e){
+    // key not found (throws) → fresh start; or storage unavailable
+    if(typeof window.storage === "undefined"){ storageOK = false; }
+    state = {};
+  }
+  setSync(storageOK ? "saved" : "in-memory");
+}
+
+async function persist(){
+  if(!storageOK) return;
+  setSync("saving…");
+  try{
+    const r = await window.storage.set(STORE_KEY, JSON.stringify(state), false);
+    setSync(r ? "saved" : "error");
+  }catch(e){
+    setSync("error");
+  }
+}
+
+/* ---------------- Render ---------------- */
+const phasesEl = document.getElementById("phases");
+const fillEl = document.getElementById("fill");
+const pctEl = document.getElementById("pct");
+let totalItems = 0;
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function buildPhase(phase){
+  const sec = document.createElement("section");
+  sec.className = "phase";
+  const doneCount = phase.items.filter(i=>state[i.id]).length;
+
+  let itemsHTML = "";
+  for(const it of phase.items){
+    totalItems++;
+    const checked = state[it.id] ? "checked" : "";
+    const noteHTML = it.n
+      ? `<span class="note">${it.n.tag?`<span class="ng-tag">${esc(it.n.tag)}</span> `:""}${esc(it.n.txt)}</span>`
+      : "";
+    const optTag = it.opt ? `<span class="optional-tag">optional</span>` : "";
+    itemsHTML += `
+      <li class="item ${checked}" data-item="${it.id}">
+        <input type="checkbox" id="${it.id}" ${checked} aria-label="${esc(it.t)}">
+        <div class="item-body">
+          <label for="${it.id}">${esc(it.t)}</label>${optTag}
+          <a class="doc" href="${it.url}" target="_blank" rel="noopener noreferrer">docs</a>
+          ${noteHTML}
+        </div>
+      </li>`;
+  }
+
+  sec.innerHTML = `
+    <div class="phase-head">
+      <span class="phase-num">${phase.num}</span>
+      <span class="phase-title">${esc(phase.title)}</span>
+      <span class="phase-est">${esc(phase.est)}</span>
+    </div>
+    <div class="phase-goal">${esc(phase.goal)}</div>
+    <ul class="items">${itemsHTML}</ul>
+    <div style="margin-top:.5rem"><span class="phase-count" data-count="${phase.num}">${doneCount}/${phase.items.length} done</span></div>
+  `;
+  return sec;
+}
+
+function updateProgress(){
+  const done = Object.values(state).filter(Boolean).length;
+  const pct = totalItems ? Math.round((done/totalItems)*100) : 0;
+  fillEl.style.width = pct + "%";
+  pctEl.textContent = pct + "%";
+  // per-phase counts
+  for(const phase of PLAN){
+    const el = document.querySelector(`[data-count="${phase.num}"]`);
+    if(!el) continue;
+    const c = phase.items.filter(i=>state[i.id]).length;
+    el.textContent = `${c}/${phase.items.length} done`;
+    el.classList.toggle("done", c===phase.items.length && c>0);
+  }
+}
+
+function render(){
+  phasesEl.innerHTML = "";
+  totalItems = 0;
+  for(const phase of PLAN){ phasesEl.appendChild(buildPhase(phase)); }
+  updateProgress();
+}
+
+/* ---------------- Events ---------------- */
+phasesEl.addEventListener("change", (e)=>{
+  const cb = e.target;
+  if(cb.type !== "checkbox") return;
+  const id = cb.id;
+  if(cb.checked){ state[id] = true; } else { delete state[id]; }
+  cb.closest(".item").classList.toggle("checked", cb.checked);
+  updateProgress();
+  persist();
+});
+
+document.getElementById("resetBtn").addEventListener("click", async ()=>{
+  state = {};
+  if(storageOK){
+    try{ await window.storage.delete(STORE_KEY, false); }catch(e){}
+  }
+  render();
+  setSync(storageOK ? "saved" : "in-memory");
+});
+
+/* ---------------- Boot ---------------- */
+(async function init(){
+  render();                 // show plan immediately
+  await loadState();        // then hydrate saved progress
+  render();
+})();
+</script>
+</body>
+</html>
